@@ -791,7 +791,7 @@ export default function App(){
             <div style={{color:TEXT,fontSize:14,fontWeight:700}}>{activeStudent.name}</div>
             {activeStudent.level&&<div style={{color:TEXT3,fontSize:12}}>{activeStudent.level}</div>}
           </div>
-          <button onClick={()=>{setActiveId(null);setShowStudents(true);}} className="tap" style={{background:'transparent',border:`1px solid ${BORDER}`,borderRadius:10,padding:'6px 12px',color:TEXT3,cursor:'pointer',fontSize:13,fontWeight:600}}>← Trocar</button>
+          <button onClick={()=>setActiveId(null)} className="tap" style={{background:'transparent',border:`1px solid ${BORDER}`,borderRadius:10,padding:'6px 12px',color:TEXT3,cursor:'pointer',fontSize:13,fontWeight:600}}>← Trocar</button>
         </div>
       )}
 
