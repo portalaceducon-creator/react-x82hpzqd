@@ -189,7 +189,14 @@ function AuthScreen({ onAuth }) {
           options: { data: { name, role: 'student' } }
         });
         if (error) throw error;
-        setError('Verifique seu email para confirmar o cadastro!');
+        if (data.user) {
+          await supabase.from('profiles').upsert({
+            id: data.user.id, email, name, role: 'student'
+          });
+          onAuth(data.user);
+        } else {
+          setError('Verifique seu email para confirmar o cadastro!');
+        }
       }
     } catch (e) {
       setError(e.message);
@@ -205,7 +212,7 @@ function AuthScreen({ onAuth }) {
           <div style={{width:56,height:56,borderRadius:'50%',background:'linear-gradient(135deg,#c8973e,#e8b84b)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,fontWeight:700,color:'#1a365d',margin:'0 auto 12px',fontFamily:"'Cormorant Garamond',serif"}}>FB</div>
           <div style={{color:'#c8973e',fontSize:10,fontWeight:700,letterSpacing:'0.15em',textTransform:'uppercase'}}>Prof. Dr.</div>
           <div style={{color:'#1a365d',fontSize:22,fontWeight:700,fontFamily:"'Cormorant Garamond',serif"}}>Fabio Busse</div>
-          <div style={{color:'#94a3b8',fontSize:12,marginTop:2}}>Inglês Profissional</div>
+          <div style={{color:'#94a3b8',fontSize:12,marginTop:2}}>Cognição & Linguagem · Curitiba, PR</div>
         </div>
 
         <div style={{display:'flex',background:'#f1f5f9',borderRadius:10,padding:4,marginBottom:24}}>
@@ -837,10 +844,16 @@ function AddStudentModal({ teacherId, onClose, onAdded }) {
   const create = async () => {
     setLoading(true); setError('');
     try {
-      const { data, error } = await supabase.auth.admin ? 
-        supabase.auth.admin.createUser({email, password:pass, email_confirm:true, user_metadata:{name,role:'student',teacher_id:teacherId}}) :
-        supabase.auth.signUp({email, password:pass, options:{data:{name,role:'student',teacher_id:teacherId}}});
+      const { data, error } = await supabase.auth.signUp({
+        email, password:pass, 
+        options:{data:{name, role:'student', teacher_id:teacherId}}
+      });
       if (error) throw error;
+      if (data.user) {
+        await supabase.from('profiles').upsert({
+          id: data.user.id, email, name, role:'student', teacher_id:teacherId
+        });
+      }
       onAdded(); onClose();
     } catch(e) { setError(e.message); }
     setLoading(false);
@@ -934,7 +947,7 @@ function Header({ student, isTeacher }) {
         <div>
           <div style={{color:'#e8b84b',fontSize:10,fontWeight:600,letterSpacing:'0.15em',textTransform:'uppercase'}}>Prof. Dr.</div>
           <div style={{color:'white',fontSize:18,fontWeight:700,fontFamily:"'Cormorant Garamond',serif",lineHeight:1.1}}>Fabio Busse</div>
-          <div style={{color:'#4a6b87',fontSize:9,letterSpacing:'0.08em'}}>Inglês Profissional</div>
+          <div style={{color:'#4a6b87',fontSize:9,letterSpacing:'0.08em'}}>Cognição & Linguagem · Curitiba, PR</div>
         </div>
       </div>
       {student&&(
@@ -984,9 +997,8 @@ export default function App() {
       setProfile(data);
       if (data.role==='teacher') {
         loadStudents(u.id);
-      } else {
-        setActiveId(u.id);
       }
+      setActiveId(u.id);
     }
     setLoading(false);
   };
