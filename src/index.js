@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { createRoot } from 'react-dom/client';
 
 const SUPABASE_URL = 'https://efjehnvnhnwamyccevkj.supabase.co';
@@ -133,9 +132,7 @@ function AuthScreen({onAuth}){
           <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" style={ipt}/>
           <input type="password" value={pass} onChange={e=>setPass(e.target.value)} placeholder="Senha" style={{...ipt,marginBottom:20}} onKeyDown={e=>e.key==='Enter'&&submit()}/>
           {err&&<div style={{background:'rgba(255,77,77,0.15)',border:`1px solid ${CORAL}`,borderRadius:12,padding:'12px 14px',fontSize:14,color:CORAL,marginBottom:16}}>{err}</div>}
-          <button onClick={submit} disabled={loading} className="tap" style={{width:'100%',padding:18,borderRadius:14,border:'none',background:LIME,color:'#111',fontSize:16,fontWeight:800,cursor:'pointer'}}>
-            {loading?'Aguarde…':mode==='login'?'Entrar':'Criar conta'}
-          </button>
+          <button onClick={submit} disabled={loading} className="tap" style={{width:'100%',padding:18,borderRadius:14,border:'none',background:LIME,color:'#111',fontSize:16,fontWeight:800,cursor:'pointer'}}>{loading?'Aguarde…':mode==='login'?'Entrar':'Criar conta'}</button>
         </div>
       </div>
     </div>
@@ -171,7 +168,7 @@ function OverviewTab({studentId}){
     {label:'Em progresso',value:inProg,color:CORAL},
   ];
   return(
-    <div className="fade" style={{padding:20,paddingBottom:100}}>
+    <div className="fade" style={{padding:20,paddingBottom:120}}>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:20}}>
         {stats.map(s=>(
           <div key={s.label} style={{background:CARD,borderRadius:20,padding:20,border:`1px solid ${BORDER}`}}>
@@ -229,7 +226,7 @@ function CalendarTab({studentId,isTeacher}){
   const cells=[...Array(firstDow).fill(null),...Array.from({length:daysInMonth},(_,i)=>i+1)];
   const todayStr=today();
   return(
-    <div className="fade" style={{padding:20,paddingBottom:100}}>
+    <div className="fade" style={{padding:20,paddingBottom:120}}>
       {modal&&isTeacher&&<LessonModal date={modal} lesson={lessons[modal]} onSave={saveLesson} onDelete={deleteLesson} onClose={()=>setModal(null)}/>}
       <div style={{background:CARD,borderRadius:20,overflow:'hidden',border:`1px solid ${BORDER}`,marginBottom:16}}>
         <div style={{padding:'20px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
@@ -351,7 +348,7 @@ function GrammarTab({studentId,isTeacher}){
   const byCat=cats.reduce((a,c)=>({...a,[c]:filtered.filter(t=>t.cat===c)}),{});
   const skillColors={speaking:BLUE,reading:LIME,listening:AMBER,writing:PURPLE};
   return(
-    <div className="fade" style={{paddingBottom:100}}>
+    <div className="fade" style={{paddingBottom:120}}>
       <div style={{background:CARD,borderBottom:`1px solid ${BORDER}`,padding:'16px 20px',position:'sticky',top:0,zIndex:10}}>
         <div style={{display:'flex',background:BG,borderRadius:14,padding:4,gap:4,marginBottom:sub==='grammar'?12:0}}>
           {[['grammar','Gramática'],['skills','Habilidades']].map(([k,l])=>(
@@ -437,7 +434,7 @@ function HomeworkTab({studentId,isTeacher}){
   const ipt={width:'100%',background:BG,border:`1px solid ${BORDER}`,borderRadius:14,padding:'14px 16px',fontSize:15,color:TEXT,marginBottom:10};
   const pending=items.filter(i=>!i.done),done=items.filter(i=>i.done);
   return(
-    <div className="fade" style={{padding:20,paddingBottom:100}}>
+    <div className="fade" style={{padding:20,paddingBottom:120}}>
       {isTeacher&&!adding&&<button onClick={()=>setAdding(true)} className="tap" style={{width:'100%',padding:18,borderRadius:16,border:`2px dashed ${LIME}`,background:'transparent',color:LIME,fontSize:16,fontWeight:700,cursor:'pointer',marginBottom:16}}>+ Adicionar Tarefa</button>}
       {isTeacher&&adding&&(
         <div style={{background:CARD,borderRadius:20,padding:20,marginBottom:16,border:`1px solid ${BORDER}`}}>
@@ -499,7 +496,7 @@ function MaterialsTab({studentId,isTeacher}){
   const tC={link:BLUE,pdf:CORAL,audio:AMBER,exercise:LIME,book:PURPLE};
   const tI={link:'🔗',pdf:'📄',audio:'🎵',exercise:'📋',book:'📚'};
   return(
-    <div className="fade" style={{padding:20,paddingBottom:100}}>
+    <div className="fade" style={{padding:20,paddingBottom:120}}>
       {isTeacher&&!adding&&<button onClick={()=>setAdding(true)} className="tap" style={{width:'100%',padding:18,borderRadius:16,border:`2px dashed ${BLUE}`,background:'transparent',color:BLUE,fontSize:16,fontWeight:700,cursor:'pointer',marginBottom:16}}>+ Adicionar Material</button>}
       {isTeacher&&adding&&(
         <div style={{background:CARD,borderRadius:20,padding:20,marginBottom:16,border:`1px solid ${BORDER}`}}>
@@ -544,7 +541,7 @@ function VideosTab({studentId,isTeacher}){
   const remove=async(id)=>{await supabase.from('videos').delete().eq('id',id);load();};
   const ipt={width:'100%',background:BG,border:`1px solid ${BORDER}`,borderRadius:14,padding:'14px 16px',fontSize:15,color:TEXT,marginBottom:10};
   return(
-    <div className="fade" style={{padding:20,paddingBottom:100}}>
+    <div className="fade" style={{padding:20,paddingBottom:120}}>
       {isTeacher&&!adding&&<button onClick={()=>setAdding(true)} className="tap" style={{width:'100%',padding:18,borderRadius:16,border:`2px dashed ${CORAL}`,background:'transparent',color:CORAL,fontSize:16,fontWeight:700,cursor:'pointer',marginBottom:16}}>+ Adicionar Vídeo</button>}
       {isTeacher&&adding&&(
         <div style={{background:CARD,borderRadius:20,padding:20,marginBottom:16,border:`1px solid ${BORDER}`}}>
@@ -594,7 +591,7 @@ function ScheduleTab({studentId,isTeacher}){
   const upd=(i,k,v)=>setSlots(s=>s.map((x,j)=>j===i?{...x,[k]:v}:x));
   const sel={width:'100%',background:BG,border:`1px solid ${BORDER}`,borderRadius:12,padding:'12px 10px',fontSize:14,color:TEXT};
   return(
-    <div className="fade" style={{padding:20,paddingBottom:100}}>
+    <div className="fade" style={{padding:20,paddingBottom:120}}>
       <div style={{background:CARD,borderRadius:20,padding:20,border:`1px solid ${BORDER}`}}>
         <div style={{fontSize:12,fontWeight:700,color:TEXT3,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:16}}>Horários Fixos</div>
         {slots.length===0&&<div style={{textAlign:'center',padding:'24px 0',color:TEXT3,fontSize:15}}>Nenhum horário configurado</div>}
@@ -633,7 +630,7 @@ function ProfileTab({profile,isTeacher,onUpdate}){
   };
   const ipt=(dis)=>({width:'100%',background:dis?CARD2:BG,border:`1px solid ${BORDER}`,borderRadius:14,padding:'15px 16px',fontSize:16,color:TEXT,marginBottom:12});
   return(
-    <div className="fade" style={{padding:20,paddingBottom:100}}>
+    <div className="fade" style={{padding:20,paddingBottom:120}}>
       <div style={{textAlign:'center',padding:'30px 0 24px'}}>
         <div style={{width:80,height:80,borderRadius:24,background:CARD2,display:'flex',alignItems:'center',justifyContent:'center',fontSize:32,fontWeight:900,color:LIME,margin:'0 auto 16px'}}>{(f.name||f.email||'?').charAt(0).toUpperCase()}</div>
         <div style={{fontSize:24,fontWeight:800,color:TEXT,letterSpacing:'-0.02em'}}>{f.name||'Sem nome'}</div>
@@ -715,6 +712,45 @@ function StudentSelector({students,activeId,onSelect,onAdd,onClose}){
   );
 }
 
+// ── BOTÃO DE CONTATO (WhatsApp + Email + Site) ──
+function ContactButton(){
+  const[open,setOpen]=useState(false);
+  const[nm,setNm]=useState('');
+  const[msg,setMsg]=useState('');
+  const ipt={width:'100%',background:CARD2,border:`1px solid ${BORDER}`,borderRadius:12,padding:'14px 16px',fontSize:15,color:TEXT,marginBottom:10};
+  const send=()=>{
+    const text=encodeURIComponent(`Olá Prof. Fabio! Me chamo ${nm}.\n\n${msg}`);
+    window.open(`https://wa.me/5541999557665?text=${text}`,'_blank');
+    setOpen(false);setNm('');setMsg('');
+  };
+  return(
+    <>
+      <button onClick={()=>setOpen(true)} style={{position:'fixed',bottom:120,right:18,width:56,height:56,borderRadius:'50%',background:'#25D366',border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 4px 20px rgba(37,211,102,0.45)',zIndex:99,fontSize:26}}>💬</button>
+      {open&&(
+        <div onClick={e=>e.target===e.currentTarget&&setOpen(false)} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.85)',zIndex:300,display:'flex',alignItems:'flex-end',justifyContent:'center',backdropFilter:'blur(8px)'}}>
+          <div style={{background:CARD,borderRadius:'24px 24px 0 0',padding:24,width:'100%',maxWidth:540,border:`1px solid ${BORDER}`}}>
+            <div style={{width:40,height:4,borderRadius:2,background:BORDER,margin:'0 auto 20px'}}/>
+            <div style={{fontSize:22,fontWeight:800,color:TEXT,marginBottom:4}}>Fale comigo</div>
+            <div style={{fontSize:14,color:TEXT3,marginBottom:20}}>Respondo pelo WhatsApp em até 24h</div>
+            <div style={{display:'flex',gap:10,marginBottom:20}}>
+              <a href="https://wa.me/5541999557665" target="_blank" rel="noreferrer" style={{flex:1,padding:'14px 8px',borderRadius:14,background:'#25D366',color:'#fff',fontSize:13,fontWeight:800,textAlign:'center',textDecoration:'none',display:'block'}}>💬 WhatsApp</a>
+              <a href="mailto:contato@institutolinguagem.com.br" style={{flex:1,padding:'14px 8px',borderRadius:14,background:CARD2,border:`1px solid ${BORDER}`,color:BLUE,fontSize:13,fontWeight:700,textAlign:'center',textDecoration:'none',display:'block'}}>✉️ Email</a>
+              <a href="https://professorfabiobusse.com.br/" target="_blank" rel="noreferrer" style={{flex:1,padding:'14px 8px',borderRadius:14,background:CARD2,border:`1px solid ${BORDER}`,color:LIME,fontSize:13,fontWeight:700,textAlign:'center',textDecoration:'none',display:'block'}}>🌐 Site</a>
+            </div>
+            <div style={{fontSize:13,fontWeight:700,color:TEXT3,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:10}}>Ou envie uma mensagem</div>
+            <input value={nm} onChange={e=>setNm(e.target.value)} placeholder="Seu nome *" style={ipt}/>
+            <textarea value={msg} onChange={e=>setMsg(e.target.value)} placeholder="Sua mensagem *" style={{...ipt,resize:'vertical',minHeight:80,marginBottom:16}}/>
+            <div style={{display:'flex',gap:8}}>
+              <button onClick={()=>setOpen(false)} style={{flex:1,padding:'14px',borderRadius:14,border:`1px solid ${BORDER}`,background:'transparent',color:TEXT3,cursor:'pointer',fontSize:14,fontWeight:600}}>Cancelar</button>
+              <button onClick={send} disabled={!nm||!msg} style={{flex:2,padding:'14px',borderRadius:14,border:'none',background:'#25D366',color:'#fff',cursor:'pointer',fontSize:15,fontWeight:800,opacity:nm&&msg?1:0.5}}>Enviar no WhatsApp</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 const TABS=[{id:'overview',label:'Início'},{id:'calendar',label:'Aulas'},{id:'grammar',label:'Gramática'},{id:'homework',label:'Tarefas'},{id:'materials',label:'Materiais'},{id:'videos',label:'Vídeos'},{id:'schedule',label:'Agenda'},{id:'profile',label:'Perfil'}];
 
 export default function App(){
@@ -757,7 +793,7 @@ export default function App(){
   const activeStudent=isTeacher?students.find(s=>s.id===activeId):profile;
   const tabsRow1=TABS.slice(0,4),tabsRow2=TABS.slice(4,8);
 
-  if(loading)return(<div style={{height:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#111111'}}><style>{CSS}</style><div style={{color:'#c8f135',fontSize:24,fontWeight:800}}>Carregando…</div></div>);
+  if(loading)return(<div style={{height:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#111111'}}><style>{CSS}</style><div style={{color:LIME,fontSize:24,fontWeight:800}}>Carregando…</div></div>);
   if(!user)return<AuthScreen onAuth={u=>loadProfile(u)}/>;
 
   return(
@@ -765,6 +801,7 @@ export default function App(){
       <style>{CSS}</style>
       {showStudents&&isTeacher&&<StudentSelector students={students} activeId={activeId} onSelect={id=>{setActiveId(id);setTab('overview');}} onAdd={()=>loadStudents(user.id)} onClose={()=>setShowStudents(false)}/>}
 
+      {/* HEADER */}
       <div style={{background:CARD,padding:'14px 20px',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0,borderBottom:`1px solid ${BORDER}`}}>
         <div style={{display:'flex',alignItems:'center',gap:12}}>
           <div style={{width:40,height:40,borderRadius:13,background:LIME,display:'flex',alignItems:'center',justifyContent:'center',fontSize:16,fontWeight:900,color:'#111'}}>FB</div>
@@ -784,6 +821,7 @@ export default function App(){
         </div>
       </div>
 
+      {/* BANNER DO ALUNO */}
       {isTeacher&&activeStudent&&(
         <div style={{background:CARD2,padding:'10px 20px',display:'flex',alignItems:'center',gap:10,borderBottom:`1px solid ${BORDER}`}}>
           <div style={{width:30,height:30,borderRadius:9,background:LIME,display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontWeight:900,color:'#111',flexShrink:0}}>{(activeStudent.name||'?').charAt(0).toUpperCase()}</div>
@@ -791,10 +829,11 @@ export default function App(){
             <div style={{color:TEXT,fontSize:14,fontWeight:700}}>{activeStudent.name}</div>
             {activeStudent.level&&<div style={{color:TEXT3,fontSize:12}}>{activeStudent.level}</div>}
           </div>
-          <button onClick={()=>setActiveId(null)} className="tap" style={{background:'transparent',border:`1px solid ${BORDER}`,borderRadius:10,padding:'6px 12px',color:TEXT3,cursor:'pointer',fontSize:13,fontWeight:600}}>← Trocar</button>
+          <button onClick={()=>setActiveId(null)} className="tap" style={{background:'transparent',border:`1px solid ${BORDER}`,borderRadius:10,padding:'6px 14px',color:TEXT3,cursor:'pointer',fontSize:13,fontWeight:600}}>← Voltar</button>
         </div>
       )}
 
+      {/* CONTEÚDO */}
       <div style={{flex:1,overflowY:'auto'}}>
         {!activeId?(
           <div style={{height:'100%',display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:16,padding:24}}>
@@ -816,12 +855,16 @@ export default function App(){
         )}
       </div>
 
+      {/* BOTÃO WHATSAPP */}
+      <ContactButton/>
+
+      {/* NAVEGAÇÃO INFERIOR */}
       <div style={{background:CARD,borderTop:`1px solid ${BORDER}`,flexShrink:0}}>
         <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)'}}>
           {tabsRow1.map(t=>(
             <button key={t.id} onClick={()=>setTab(t.id)} className="tap" style={{padding:'14px 4px 12px',border:'none',background:'transparent',cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
               <div style={{width:6,height:6,borderRadius:'50%',background:tab===t.id?LIME:'transparent'}}/>
-              <span style={{fontSize:16,fontWeight:tab===t.id?800:500,color:tab===t.id?LIME:TEXT3}}>{t.label}</span>
+              <span style={{fontSize:13,fontWeight:tab===t.id?800:500,color:tab===t.id?LIME:TEXT3}}>{t.label}</span>
             </button>
           ))}
         </div>
@@ -829,7 +872,7 @@ export default function App(){
           {tabsRow2.map(t=>(
             <button key={t.id} onClick={()=>setTab(t.id)} className="tap" style={{padding:'14px 4px 12px',border:'none',background:'transparent',cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
               <div style={{width:6,height:6,borderRadius:'50%',background:tab===t.id?LIME:'transparent'}}/>
-              <span style={{fontSize:16,fontWeight:tab===t.id?800:500,color:tab===t.id?LIME:TEXT3}}>{t.label}</span>
+              <span style={{fontSize:13,fontWeight:tab===t.id?800:500,color:tab===t.id?LIME:TEXT3}}>{t.label}</span>
             </button>
           ))}
         </div>
