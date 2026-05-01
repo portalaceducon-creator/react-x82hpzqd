@@ -829,7 +829,7 @@ export default function App(){
           {tabsRow2.map(t=>(
             <button key={t.id} onClick={()=>setTab(t.id)} className="tap" style={{padding:'14px 4px 12px',border:'none',background:'transparent',cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
               <div style={{width:6,height:6,borderRadius:'50%',background:tab===t.id?LIME:'transparent'}}/>
-              <span style={{fontSize:11,fontWeight:tab===t.id?800:500,color:tab===t.id?LIME:TEXT3}}>{t.label}</span>
+              <span style={{fontSize:16,fontWeight:tab===t.id?800:500,color:tab===t.id?LIME:TEXT3}}>{t.label}</span>
             </button>
           ))}
         </div>
