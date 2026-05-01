@@ -59,6 +59,7 @@ const WDAYS=["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 const WFULL=["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"];
 const LEVELS=["Absolute Beginner","Beginner","Elementary","Pre-Intermediate","Intermediate","Upper-Intermediate","Advanced","Proficiency"];
 const LESSON_STATUS={
+  scheduled:{label:"Agendada",color:"#4da6ff",bg:"rgba(77,166,255,0.15)"},
   attended:{label:"Realizada",color:"#c8f135",bg:"rgba(200,241,53,0.15)"},
   cancelled_student:{label:"Aluno cancelou",color:"#f0a500",bg:"rgba(240,165,0,0.15)"},
   cancelled_late:{label:"Cancelou <24h",color:"#ff4d4d",bg:"rgba(255,77,77,0.15)"},
@@ -583,7 +584,20 @@ function ScheduleTab({studentId,isTeacher}){
   useEffect(()=>{supabase.from('schedules').select('*').eq('student_id',studentId).then(({data})=>setSlots(data||[]));},[studentId]);
   const save=async()=>{
     await supabase.from('schedules').delete().eq('student_id',studentId);
-    if(slots.length)await supabase.from('schedules').insert(slots.map(s=>({student_id:studentId,day_of_week:s.day_of_week??1,start_time:s.start_time??'10:00',duration:s.duration??60})));
+    if(slots.length){
+      await supabase.from('schedules').insert(slots.map(s=>({student_id:studentId,day_of_week:s.day_of_week??1,start_time:s.start_time??'10:00',duration:s.duration??60})));
+      const today=new Date();
+      const future=new Date(today);future.setMonth(future.getMonth()+12);
+      await supabase.from('lessons').delete().eq('student_id',studentId).gte('lesson_date',today.toISOString().split('T')[0]).eq('status','scheduled');
+      const newLessons=[];
+      for(let d=new Date(today);d<=future;d.setDate(d.getDate()+1)){
+        const dow=d.getDay();
+        if(slots.some(s=>(s.day_of_week??1)===dow)){
+          newLessons.push({student_id:studentId,lesson_date:d.toISOString().split('T')[0],status:'scheduled',tasks:'none'});
+        }
+      }
+      if(newLessons.length)await supabase.from('lessons').insert(newLessons);
+    }
     setSaved(true);setTimeout(()=>setSaved(false),2000);
   };
   const add=()=>setSlots(s=>[...s,{day_of_week:1,start_time:'10:00',duration:60}]);
